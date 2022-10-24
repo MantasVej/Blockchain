@@ -1,8 +1,5 @@
 #include "Header.h"
 
-using std::string;
-using std::endl;
-
 void UserGenerator(int n, vector<User>& Users) {
     User U;
     std::random_device random_device;
@@ -10,7 +7,6 @@ void UserGenerator(int n, vector<User>& Users) {
     std::uniform_int_distribution<> distribution(100, 1000000);
     std::ofstream fr("users.txt");
     std::stringstream my_buffer;
-    string name;
     for (int i = 0; i < n; i++) {
         U.setName("Vartotojas" + std::to_string(i + 1));
         U.setBalance(distribution(generator));

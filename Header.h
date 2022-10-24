@@ -5,7 +5,8 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-#include<vector>
+#include <vector>
+#include <ctime>
 
 using std::cout;
 using std:: endl;

@@ -24,6 +24,7 @@
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="blockchain.h" />
     <ClInclude Include="Header.h" />
     <ClInclude Include="sha256.h" />
   </ItemGroup>
