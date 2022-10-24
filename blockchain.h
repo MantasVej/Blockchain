@@ -14,17 +14,25 @@ private:
 	vector <Transaction> transactions;
 public:
 	block(const vector <Transaction> &T) {
-		index = 0;
-		transactions = T;
 		timestamp = std::time(nullptr);
 		version = "1";
 		nonce = 0;
+		transactions = T;
+		mercle_root_hash = mercleTree(T);
 		hash = calculateHash();
 	}
 private:
 	inline string calculateHash() {
 		std::stringstream s;
 		s << prev_block_hash << timestamp << version << mercle_root_hash << nonce << difficulty;
+		return sha256(s.str());
+	}
+	string mercleTree(const vector <Transaction>& T) {
+		//TODO: mercle tree implementation
+		std::stringstream s;
+		for (auto a : T) {
+			s << a.getId();
+		}
 		return sha256(s.str());
 	}
 	void mineBlock(int difficulty)
@@ -48,8 +56,12 @@ private:
 	int difficulty;
 public:
 	blockchain(const vector <Transaction>& T) {
-		blocks.push_back(block(T));
 		difficulty = 5;
+		block Genesis_block(T);
+		Genesis_block.index = 0;
+		Genesis_block.prev_block_hash = sha256("");
+		Genesis_block.mineBlock(difficulty);
+		blocks.push_back(Genesis_block);
 	}
 	void addBlock(block newBlock)
 	{
