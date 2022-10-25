@@ -13,13 +13,18 @@ private:
 	int difficulty;
 	vector <Transaction> transactions;
 public:
-	block(const vector <Transaction> &T) {
+	block(vector <Transaction> &T) {
+		vector <Transaction> pool = T;
+		vector <Transaction> Transactions;
+		Transactions = GetTransactions(pool, 10);
 		timestamp = std::time(nullptr);
 		version = "1";
 		nonce = 0;
-		transactions = T;
+		difficulty = 5;
+		transactions = Transactions;
 		mercle_root_hash = mercleTree(T);
 		hash = calculateHash();
+		T = pool;
 	}
 private:
 	inline string calculateHash() {
@@ -45,7 +50,7 @@ private:
 			hash = calculateHash();
 		} while (hash.substr(0, difficulty) != str);
 
-		cout << "Block mined: " << hash << endl;
+		cout << index << " Block mined: " << hash << endl;
 	}
 	friend class blockchain;
 };
@@ -53,22 +58,33 @@ private:
 class blockchain {
 private:
 	vector <block> blocks;
-	int difficulty;
 public:
-	blockchain(const vector <Transaction>& T) {
-		difficulty = 5;
+	blockchain(vector <Transaction>& T) {
 		block Genesis_block(T);
 		Genesis_block.index = 0;
 		Genesis_block.prev_block_hash = sha256("");
-		Genesis_block.mineBlock(difficulty);
+		Genesis_block.mineBlock(Genesis_block.difficulty);
 		blocks.push_back(Genesis_block);
 	}
-	void addBlock(block newBlock)
+	void addBlock(vector <Transaction>& T)
 	{
+		block newBlock(T);
 		newBlock.prev_block_hash = getLastBlock().hash;
 		newBlock.index = getLastBlock().index + 1;
-		newBlock.mineBlock(difficulty);
+		newBlock.mineBlock(newBlock.difficulty);
 		blocks.push_back(newBlock);
+	}
+	void print() {
+		std::ofstream fr("blockchain.txt");
+		std::stringstream my_buffer;
+		my_buffer << "ID |" << std::setw(33) << "hash" << std::setw(34) << "|" << std::setw(33) << "mercle root" << std::setw(34) << "|" << " timestamp  " << "|" << " difficulty " << "|" << "   nonce  " << "|" << " version" << endl;
+		my_buffer << "-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------" << endl;
+		for (auto a : blocks) {
+			my_buffer << a.index << "  | " << a.hash << " | " << a.mercle_root_hash << " | " << a.timestamp << " | " << std::setw(6) << a.difficulty << std::setw(7) << " | " << std::setw(8) << std::right << a.nonce << " | " << a.version << endl;
+			my_buffer << "-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------" << endl;
+		}
+		fr << my_buffer.str();
+		fr.close();
 	}
 private:
 	block getLastBlock() const

@@ -1,6 +1,7 @@
 #pragma once
 #include "sha256.h"
 #include <iostream>
+#include <iomanip>
 #include <random>
 #include <string>
 #include <fstream>
@@ -67,7 +68,9 @@ public:
 
 };
 
-void UserGenerator(int n, vector<User>& Users);
-void ReadUsers(string failas, vector<User>& Users);
-void TransactionGenerator(vector<User>& Users, vector <Transaction>& Transactions, int n);
-void ReadTransactions(string failas, vector<Transaction>& Transactions);
+void UserGenerator(int, vector<User>&);
+void ReadUsers(string, vector<User>&);
+void TransactionGenerator(vector<User>&, vector <Transaction>&, int);
+void ReadTransactions(string, vector<Transaction>&);
+vector <Transaction> GetTransactions(vector <Transaction>&, int);
+void PrintTransactions(vector <Transaction>&);
