@@ -112,7 +112,7 @@ public:
 		int input;
 		int idB, idT;
 		while (1) {
-			cout << "Kurti bloka                             1" << endl;
+			cout << "Kurti nauja bloka                       1" << endl;
 			cout << "Kurti blokus kol yra laisvu transakciju 2" << endl;
 			cout << "Spausdinti bloka                        3" << endl;
 			cout << "Spausdinti transakcija                  4" << endl;

@@ -21,11 +21,19 @@ void UserGenerator(int n, vector<User>& Users) {
 void ReadUsers(string failas, vector<User>& Users) {
     User U;
     std::stringstream my_buffer;
-    std::ifstream fd(failas);
+    try {
+        std::ifstream fd(failas);
+        fd.exceptions(std::ifstream::failbit);
+        my_buffer << fd.rdbuf();
+        fd.close();
+    }
+    catch (std::exception& e) {
+        cout << "Toks duomenu failas neegzistuoja.";
+        exit(0);
+    }
     string eil;
     string name, public_key;
     int balance;
-    my_buffer << fd.rdbuf();
     while (my_buffer) {
         if (!my_buffer.eof()) {
             std::getline(my_buffer, eil);
@@ -37,7 +45,6 @@ void ReadUsers(string failas, vector<User>& Users) {
         }
         else break;
     }
-    fd.close();
 }
 
 void TransactionGenerator(vector<User>& Users, vector <Transaction>& Transactions, int n) {
@@ -50,6 +57,8 @@ void TransactionGenerator(vector<User>& Users, vector <Transaction>& Transaction
     std::ofstream fr("transactions.txt");
     std::stringstream my_buffer;
     int amount;
+    cout << std::setw(33) << "hash" << std::setw(33) << "|" << std::setw(34) << "sender" << std::setw(34) << " | " << std::setw(33) << "receiver" << std::setw(34) << " | " << "amount" << endl;
+    cout << "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------" << endl;
     for (int i = 0; i < n; i++) {
         do {
             sender = Users[distribution(generator)];
@@ -59,6 +68,8 @@ void TransactionGenerator(vector<User>& Users, vector <Transaction>& Transaction
         Transaction T(sender, receiver, amount);
         Transactions.push_back(T);
         my_buffer << T.getId() << " " << T.getSender() << " " << T.getReceiver() << " " << amount << endl;
+        cout << T.getId() << " | " << T.getSender() << " | " << T.getReceiver() << " | " << T.getAmount() << endl;
+        cout << "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------" << endl;
     }
     fr << my_buffer.str();
     fr.close();
@@ -66,11 +77,19 @@ void TransactionGenerator(vector<User>& Users, vector <Transaction>& Transaction
 
 void ReadTransactions(string failas, vector<Transaction>& Transactions) {
     std::stringstream my_buffer;
-    std::ifstream fd(failas);
+    try {
+        std::ifstream fd(failas);
+        fd.exceptions(std::ifstream::failbit);
+        my_buffer << fd.rdbuf();
+        fd.close();
+    }
+    catch (std::exception& e) {
+        cout << "Toks duomenu failas neegzistuoja.";
+        exit(0);
+    }
     string eil;
     string id, sender_key, receiver_key;
     int amount;
-    my_buffer << fd.rdbuf();
     while (my_buffer) {
         if (!my_buffer.eof()) {
             std::getline(my_buffer, eil);
@@ -81,5 +100,4 @@ void ReadTransactions(string failas, vector<Transaction>& Transactions) {
         }
         else break;
     }
-    fd.close();
 }
