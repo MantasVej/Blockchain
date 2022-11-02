@@ -61,24 +61,26 @@ class blockchain {
 private:
 	vector <block> blocks;
 public:
-	blockchain(vector <Transaction>& T) {
+	blockchain(vector<User>& U, vector <Transaction>& T) {
 		block Genesis_block(T);
 		Genesis_block.index = 0;
 		Genesis_block.prev_block_hash = sha256("");
 		Genesis_block.mineBlock(Genesis_block.difficulty);
+		updateBalances(U, T);
 		blocks.push_back(Genesis_block);
 	}
-	void addBlock(vector <Transaction>& T)
+	void addBlock(vector<User>& U, vector <Transaction>& T)
 	{
 		block newBlock(T);
 		newBlock.prev_block_hash = getLastBlock().hash;
 		newBlock.index = getLastBlock().index + 1;
 		newBlock.mineBlock(newBlock.difficulty);
+		updateBalances(U, T);
 		blocks.push_back(newBlock);
 	}
-	void addBlocks(vector <Transaction>& T) {
+	void addBlocks(vector<User>& U, vector <Transaction>& T) {
 		while (T.size() > 0) {
-			addBlock(T);
+			addBlock(U, T);
 		}
 	}
 	void printBlockchain() {
@@ -108,7 +110,7 @@ public:
 		cout << blocks[iB].transactions[iT].getId() << " | " << blocks[iB].transactions[iT].getSender() << " | " << blocks[iB].transactions[iT].getReceiver() << " | " <<  blocks[iB].transactions[iT].getAmount() << endl;
 		cout << "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------" << endl;
 	}
-	void manageBlockchain(vector <Transaction>& Transactions) {
+	void manageBlockchain(vector<User>& Users, vector <Transaction>& Transactions) {
 		int input;
 		int idB, idT;
 		while (1) {
@@ -119,8 +121,8 @@ public:
 			cout << "Baigti                                  0" << endl;
 			cin >> input;
 			if (input == 0) { printBlockchain(); break; }
-			else if (input == 1) { if (Transactions.size() != 0) addBlock(Transactions); else cout << "Transakciju pool'as tuscias" << endl; }
-			else if (input == 2) { if (Transactions.size() != 0) addBlocks(Transactions); else cout << "Transakciju pool'as tuscias" << endl; }
+			else if (input == 1) { if (Transactions.size() != 0) addBlock(Users, Transactions); else cout << "Transakciju pool'as tuscias" << endl; }
+			else if (input == 2) { if (Transactions.size() != 0) addBlocks(Users, Transactions); else cout << "Transakciju pool'as tuscias" << endl; }
 			else if (input == 3) { cout << "Iveskite bloko id "; cin >> idB; printBlock(idB); }
 			else if (input == 4) { cout << "Iveskite bloko id "; cin >> idB; cout << "Iveskite transakcijos id "; cin >> idT; printTransaction(idB, idT); }
 			else cout << "Netinkama ivestis" << endl;
@@ -130,5 +132,14 @@ private:
 	block getLastBlock() const
 	{
 		return blocks.back();
+	}
+	void updateBalances(vector<User>& U, vector <Transaction>& T) {
+		for (auto t : T) {
+			for (int i = 0; i < U.size(); i++) {
+				if (U[i].getKey() == t.getSender()) U[i].setBalance(U[i].getBalance() - t.getAmount());
+				if (U[i].getKey() == t.getReceiver()) U[i].setBalance(U[i].getBalance() + t.getAmount());
+			}
+		}
+		printUsers(U);
 	}
 };

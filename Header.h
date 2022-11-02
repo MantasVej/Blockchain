@@ -33,7 +33,6 @@ public:
 	string getName() { return name; }
 	string getKey() { return public_key; }
 	int getBalance() { return balance; }
-
 };
 
 class Transaction {
@@ -75,3 +74,4 @@ void TransactionGenerator(vector<User>&, vector <Transaction>&, int);
 void ReadTransactions(string, vector<Transaction>&);
 vector <Transaction> GetTransactions(vector <Transaction>&, int);
 void PrintTransactions(vector <Transaction>&);
+void printUsers(vector<User>&);
