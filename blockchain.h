@@ -1,5 +1,6 @@
 #pragma once
 #include "Header.h"
+#include "Merkle.h"
 SHA256 sha256;
 class block {
 private:
@@ -33,12 +34,8 @@ private:
 		return sha256(s.str());
 	}
 	string mercleTree(const vector <Transaction>& T) {
-		//TODO: mercle tree implementation
-		std::stringstream s;
-		for (auto a : T) {
-			s << a.getId();
-		}
-		return sha256(s.str());
+		MerkleTree M(T);
+		return M.getRoot();
 	}
 	void mineBlock(int difficulty)
 	{
