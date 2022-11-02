@@ -24,7 +24,7 @@ public:
 		difficulty = 5;
 		transactions = Transactions;
 		mercle_root_hash = mercleTree(transactions);
-		hash = calculateHash();
+		hash = "";
 		T = pool;
 	}
 private:
@@ -51,6 +51,21 @@ private:
 		cout << index << "  | " << hash << " | " << mercle_root_hash << " | " << timestamp << " | " << std::setw(6) << difficulty << std::setw(7) << " | " << std::setw(8) << std::right << nonce << " | " << version << endl;
 		cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------" << endl;
 	}
+	void mineBlock(int difficulty, int maxNonce)
+	{
+		string str;
+		str.append(difficulty, '0');
+		do
+		{
+			if (maxNonce == nonce) { hash = ""; return; }
+			nonce++;
+			hash = calculateHash();
+		} while (hash.substr(0, difficulty) != str);
+		cout << "ID |" << std::setw(33) << "hash" << std::setw(34) << "|" << std::setw(33) << "mercle root" << std::setw(34) << "|" << " timestamp  " << "|" << " difficulty " << "|" << "   nonce  " << "|" << " version" << endl;
+		cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------" << endl;
+		cout << index << "  | " << hash << " | " << mercle_root_hash << " | " << timestamp << " | " << std::setw(6) << difficulty << std::setw(7) << " | " << std::setw(8) << std::right << nonce << " | " << version << endl;
+		cout << "-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------" << endl;
+	}
 	friend class blockchain;
 };
 
@@ -68,12 +83,13 @@ public:
 	}
 	void addBlock(vector<User>& U, vector <Transaction>& T)
 	{
-		block newBlock(T);
+		mineFive(U, T);
+		/*block newBlock(T);
 		newBlock.prev_block_hash = getLastBlock().hash;
 		newBlock.index = getLastBlock().index + 1;
 		newBlock.mineBlock(newBlock.difficulty);
 		updateBalances(U, newBlock.transactions);
-		blocks.push_back(newBlock);
+		blocks.push_back(newBlock);*/
 	}
 	void addBlocks(vector<User>& U, vector <Transaction>& T) {
 		while (T.size() > 0) {
@@ -124,6 +140,36 @@ public:
 			else if (input == 4) { cout << "Iveskite bloko id "; cin >> idB; cout << "Iveskite transakcijos id "; cin >> idT; printTransaction(idB, idT); }
 			else cout << "Netinkama ivestis" << endl;
 		}
+	}
+	void mineFive(vector<User>& U, vector <Transaction>& T) {
+		vector <block> b;
+		vector <int> index = {0, 1, 2, 3, 4};
+		int maxNonce = 100000;
+		vector <Transaction> Transactions;
+		vector <vector <Transaction>> pool;
+		for (int i = 0; i < 5; i++) {
+			vector <Transaction> Temp = T;
+			Transactions = GetTransactions(Temp, 100);
+			block B(Transactions);
+			B.prev_block_hash = getLastBlock().hash;
+			B.index = getLastBlock().index + 1;
+			b.push_back(B);
+			pool.push_back(Temp);
+		}
+		while (1) {
+			std::random_shuffle(index.begin(), index.end());
+			for (int i : index) {
+				b[i].mineBlock(b[i].difficulty, maxNonce);
+				if (b[i].hash != "") {
+					updateBalances(U, b[i].transactions);
+					blocks.push_back(b[i]);
+					T = pool[i];
+					return;
+				}
+			}
+			maxNonce += 100000;
+		}
+
 	}
 private:
 	block getLastBlock() const

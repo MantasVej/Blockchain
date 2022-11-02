@@ -8,6 +8,7 @@
 #include <sstream>
 #include <vector>
 #include <ctime>
+#include <algorithm>
 
 using std::cout;
 using std::cin;
