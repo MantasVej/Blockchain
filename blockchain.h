@@ -17,13 +17,13 @@ public:
 	block(vector <Transaction> &T) {
 		vector <Transaction> pool = T;
 		vector <Transaction> Transactions;
-		Transactions = GetTransactions(pool, 10);
+		Transactions = GetTransactions(pool, 100);
 		timestamp = std::time(nullptr);
 		version = "1";
 		nonce = 0;
 		difficulty = 5;
 		transactions = Transactions;
-		mercle_root_hash = mercleTree(T);
+		mercle_root_hash = mercleTree(transactions);
 		hash = calculateHash();
 		T = pool;
 	}
@@ -63,7 +63,7 @@ public:
 		Genesis_block.index = 0;
 		Genesis_block.prev_block_hash = sha256("");
 		Genesis_block.mineBlock(Genesis_block.difficulty);
-		updateBalances(U, T);
+		updateBalances(U, Genesis_block.transactions);
 		blocks.push_back(Genesis_block);
 	}
 	void addBlock(vector<User>& U, vector <Transaction>& T)
@@ -72,7 +72,7 @@ public:
 		newBlock.prev_block_hash = getLastBlock().hash;
 		newBlock.index = getLastBlock().index + 1;
 		newBlock.mineBlock(newBlock.difficulty);
-		updateBalances(U, T);
+		updateBalances(U, newBlock.transactions);
 		blocks.push_back(newBlock);
 	}
 	void addBlocks(vector<User>& U, vector <Transaction>& T) {

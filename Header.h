@@ -75,3 +75,4 @@ void ReadTransactions(string, vector<Transaction>&);
 vector <Transaction> GetTransactions(vector <Transaction>&, int);
 void PrintTransactions(vector <Transaction>&);
 void printUsers(vector<User>&);
+bool ValidateTransaction(int, int);

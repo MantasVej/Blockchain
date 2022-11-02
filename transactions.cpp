@@ -25,11 +25,15 @@ void PrintTransactions(vector <Transaction>& Transactions) {
 }
 void printUsers(vector<User>& U) {
     std::stringstream my_buffer;
-    std::ofstream fr("users1.txt");
+    std::ofstream fr("users.txt");
     for (int i = 0; i < U.size(); i++) {
         my_buffer << U[i].getName() + " " << U[i].getKey() << " " << U[i].getBalance();
         if (i + 1 != U.size()) my_buffer << endl;
     }
     fr << my_buffer.str();
     fr.close();
+}
+bool ValidateTransaction(int balance, int amount) {
+    if (balance >= amount) return 1;
+    else return 0;
 }

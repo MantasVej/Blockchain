@@ -50,10 +50,12 @@ void ReadUsers(string failas, vector<User>& Users) {
 void TransactionGenerator(vector<User>& Users, vector <Transaction>& Transactions, int n) {
     User sender;
     User receiver;
+    int senderID;
+    vector <User> Temp = Users;
     std::random_device random_device;
     std::mt19937 generator(random_device());
     std::uniform_int_distribution<> distribution(0, Users.size()-1);
-    std::uniform_int_distribution<> distribution2(1, 10000);
+    std::uniform_int_distribution<> distribution2(1, 100000);
     std::ofstream fr("transactions.txt");
     std::stringstream my_buffer;
     int amount;
@@ -61,15 +63,19 @@ void TransactionGenerator(vector<User>& Users, vector <Transaction>& Transaction
     cout << "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------" << endl;
     for (int i = 0; i < n; i++) {
         do {
-            sender = Users[distribution(generator)];
+            senderID = distribution(generator);
+            sender = Users[senderID];
             receiver = Users[distribution(generator)];
         } while (sender.getKey() == receiver.getKey());
         amount = distribution2(generator);
-        Transaction T(sender, receiver, amount);
-        Transactions.push_back(T);
-        my_buffer << T.getId() << " " << T.getSender() << " " << T.getReceiver() << " " << amount << endl;
-        cout << T.getId() << " | " << T.getSender() << " | " << T.getReceiver() << " | " << T.getAmount() << endl;
-        cout << "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------" << endl;
+        if (ValidateTransaction(Temp[senderID].getBalance(), amount)) {
+            Temp[senderID].setBalance(Temp[senderID].getBalance() - amount);
+            Transaction T(sender, receiver, amount);
+            Transactions.push_back(T);
+            my_buffer << T.getId() << " " << T.getSender() << " " << T.getReceiver() << " " << amount << endl;
+            cout << T.getId() << " | " << T.getSender() << " | " << T.getReceiver() << " | " << T.getAmount() << endl;
+            cout << "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------" << endl;
+        }
     }
     fr << my_buffer.str();
     fr.close();
