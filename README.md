@@ -21,3 +21,13 @@
     4 - spausdinti informaciją apie transakciją
   
     0 - baigti programos darbą
+    
+## v0.2
+**Naudojimo instrukcija**
+
+Tas pats kaip ir versijoje **v0.1**
+
+**Pakeitimai**
+1. Merkle medžio implementacija hash'uojant transakcijas.
+2. Vartotjų balanso tikrinimas.
+3. Patobulinta blokų kasimo (mining) strategija.
